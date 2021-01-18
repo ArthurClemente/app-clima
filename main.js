@@ -1,12 +1,16 @@
 window.addEventListener("load", () => {
+    let appId = '923a24b5768942f63baf42197c5dca3a';
+    let unidade = 'metric';
+
     let long;
     let lat;
     let descTemperatura = document.querySelector(".descTemperatura");
     let grau = document.querySelector(".grau");
     let local = document.querySelector(".clima-local");
     let mudarGrau = document.querySelector(".mudarGrau");
-    const spanTemperatura = document.querySelector(".temperatura span")
+    const spanTemperatura = document.querySelector(".temperatura span");
 
+        // Transformar o if em função
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(position => {
             long = position.coords.longitude;
@@ -34,8 +38,10 @@ window.addEventListener("load", () => {
                     graus(temp)
                 })
         });
+    }else{
+        
     }
-
+    // Criar função para pegar as coordenadas da cidade pelo nome
     function graus(temperatura) {
         mudarGrau.addEventListener('click', () => {
             if (spanTemperatura.textContent === "Cº") {
@@ -48,4 +54,23 @@ window.addEventListener("load", () => {
             }
         })
     }
+
+    function buscarClima(termoDeBusca) {
+        fetch(`http://api.openweathermap.org/data/2.5/weather?q=${termoDeBusca}&APPID=${appId}&units=${unidade}`).then(result => {
+            return result.json();
+        }).then(result => {
+            init(result);
+        })
+    }
+
+    function init(resultadoDoServidor){
+        console.log(resultadoDoServidor);
+    }
+
+    document.getElementById('botaoPesquisa').addEventListener('click', () => {
+        let termoDeBusca = document.getElementById('inputPesquisa').value;
+        if(termoDeBusca){
+            buscarClima(termoDeBusca);
+        }
+    })
 });
